@@ -20,14 +20,19 @@ import java.io.InputStream;
 public class FileUtils {
 
     public static String getRealPath(Context context,Uri uri) {
-        String[] projection = { MediaStore.Video.Media.DATA };
-        Cursor cursor= context.getContentResolver().query(
-                uri,projection,null,null,null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-        cursor.moveToFirst();
-        String path=cursor.getString(column_index);
-        cursor.close();
-        if(path==null)
+        String path = null;
+        try {
+            String[] projection = { MediaStore.Video.Media.DATA };
+            Cursor cursor= context.getContentResolver().query(
+                    uri,projection,null,null,null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+            cursor.moveToFirst();
+            path = cursor.getString(column_index);
+            cursor.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(path == null)
             return FileUtils.getPath(context, uri);
         return path;
     }
